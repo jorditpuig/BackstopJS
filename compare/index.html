@@ -29,7 +29,7 @@
   <h1>{{name}} Report</h1>
 
   <h3 class="statContainer">
-    <span class="stat">Passed <span class='label label-success'>{{passedCount}}</span>&nbsp;&nbsp; Failed <span class='label label-danger'>{{testPairs.length-passedCount}}</span></span>
+    <span class="stat">Passed <span class='label label-success'>{{passedCount}}</span>&nbsp;&nbsp; Failed <span class='label label-danger'>{{testPairs.length-passedCount}}</span>&nbsp;&nbsp; Shown <span class='label label-warning'>{{shownPairs.length}}</span></span>
   </h3>
 
   <div class="no-print summaryControls">
@@ -60,9 +60,12 @@
     <label for="showPairStats" class="control-label showPairStats">show stats
       <input id="showPairStats" type="checkbox" ng-model="showPairStats" class="showPairStats" />
     </label>
+    <label for="hideEmptyReference" class="control-label hideEmptyReference">hide tests with empty reference
+      <input id="hideEmptyReference" type="checkbox" ng-model="hideEmptyReference" class="hideEmptyReference" />
+    </label>
   </div> <!-- end filterGroup -->
 
-  <div class="results" ng-repeat="thisTestPair in testPairs | filter : displayOnStatusFilter">
+  <div class="results" ng-repeat="thisTestPair in shownPairs = (testPairs | filter : displayOnStatusFilter)">
     <div class="flex-container">
       <div class="selector">{{ thisTestPair.meta.pair.label }} - {{ thisTestPair.meta.pair.selector }}
         <button type="button" class="btn btn-default btn-sm show-diff no-print"

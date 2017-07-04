@@ -10,6 +10,13 @@ var compareApp = angular.module('compareApp', ['ui.bootstrap', 'angular-clipboar
 
 var defaultMisMatchThreshold = 1;
 
+var FileExists = function(url, callback) {
+  var img = new Image();
+  img.onerror = callback;
+  img.onload = function() {};
+  img.src = url;
+}
+
 var TestPair = function (o) {
   this.a = {src: o.pair.reference || '', srcClass: 'reference'};
   this.b = {src: o.pair.test || '', srcClass: 'test'};
@@ -17,6 +24,9 @@ var TestPair = function (o) {
 
   this.report = JSON.stringify(o.pair.diff, null, 2);
   this.passed = o.status === 'pass';
+  this.emptyReference = false;
+  var t = this;
+  FileExists(o.pair.reference, function() { console.log(t); t.emptyReference = true });
   this.meta = o;
   this.meta.misMatchThreshold = (o && o.misMatchThreshold && o.misMatchThreshold >= 0) ? o.misMatchThreshold : defaultMisMatchThreshold;
 };
@@ -30,6 +40,7 @@ compareApp.controller('MainCtrl', ['$scope', '$uibModal', 'clipboard', function 
   $scope.testIsRunning = true;
   $scope.isSummaryListCollapsed = true;
   $scope.showPairStats = false;
+  $scope.hideEmptyReference = false;
 
   if (!clipboard.supported) {
     $scope.alerts.push({type: 'danger', msg: 'Sorry, copy to clipboard is not supported'});
@@ -57,6 +68,10 @@ compareApp.controller('MainCtrl', ['$scope', '$uibModal', 'clipboard', function 
   $scope.detailFilterOptions = ['failed', 'passed', 'all', 'none'];
 
   $scope.displayOnStatusFilter = function (o) {
+    if ($scope.hideEmptyReference && o.emptyReference) {
+      return false;
+    }
+
     if ($scope.statusFilter === 'all') {
       return true;
     }
