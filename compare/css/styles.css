@@ -70,7 +70,7 @@ th{text-align: left;background: #ddd;padding: 10px;white-space: nowrap;}
   margin-bottom: 10px;
 }
 
-.showPairStats {
+.showPairStats, .hideEmptyReference {
   display: initial;
   width: auto;
 }
